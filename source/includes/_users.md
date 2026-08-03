@@ -419,6 +419,113 @@ This endpoint requires the `users:read` scope.
 }
 ```
 
+## Get Custom Fields
+
+> List the custom fields defined on your account:
+
+```shell
+curl --location --request GET 'https://{API_BASE_URL}/v1/users/custom_fields' \
+--header 'Authorization: Bearer YOUR-ACCESS-TOKEN'
+```
+
+```ruby
+module Learnamp
+  class Users
+    include HTTParty
+    base_uri "#{ENV['API_BASE_URL']}/v1"
+
+    attr_accessor :token
+
+    def initialize(token)
+      @token = token
+    end
+
+    def custom_fields
+      response = self.class.get("/users/custom_fields", { headers: headers })
+      response.parsed_response if response.ok?
+    end
+
+    private
+
+    def headers
+      {
+        'Authorization' => "Bearer #{token}"
+      }
+    end
+  end
+end
+
+custom_fields = Learnamp::Users.new(token).custom_fields
+```
+
+List the custom fields defined on your account, so that you can map your own fields onto them before sending values with [Create a User](#create-a-user) or [Update a user](#update-a-user).
+
+`GET https://{API_BASE_URL}/v1/users/custom_fields`
+
+Custom fields are defined on your account by Learn Amp — they cannot be created, renamed or deleted through the API. This endpoint is read-only, and returns definitions rather than any user's values. A user's own values are returned on the user object as `customFields`.
+
+Each field's `name` is the value to send in the `customFields` array when creating or updating a user.
+
+### Required Scope
+This endpoint requires the `users:read` scope.
+
+### Response fields
+
+Field | type | Description
+--------- | ---- | -----------
+customFieldsEnabled | boolean | Whether custom field values can be written on your account. When `false`, a `customFields` payload sent to the user endpoints is ignored. Definitions are still listed, so this is distinguishable from having none defined.
+id | integer | Identifier of the custom field.
+name | string | The field's name, as shown in Learn Amp. Send this value in the `customFields` array when creating or updating a user.
+namedIdentifier | string or null | An optional stable reference code for the field. Not set on most fields.
+validatePresence | boolean | When `true`, the field's value cannot be cleared. See [Clearing custom field values](#clearing-custom-field-values).
+validateUniqueness | boolean | When `true`, a value may only be used by one user in your account. Sending a duplicate value returns `400 Bad Request`.
+possibleValues | Array(string) or null | When `null`, the field accepts free text. When an array, only those values are accepted and anything else returns `400 Bad Request`.
+userEditable | boolean | Whether users can edit their own value for this field.
+visibleOnUserProfile | boolean | Whether the field is shown on a user's profile.
+
+> 200 OK - successful response:
+
+```json
+{
+    "customFieldsEnabled": true,
+    "customFields": [
+        {
+            "id": 109,
+            "name": "Contract term",
+            "namedIdentifier": null,
+            "validatePresence": false,
+            "validateUniqueness": false,
+            "possibleValues": [
+                "Permanent",
+                "Fixed term"
+            ],
+            "userEditable": false,
+            "visibleOnUserProfile": true
+        },
+        {
+            "id": 107,
+            "name": "Cost Centre",
+            "namedIdentifier": null,
+            "validatePresence": false,
+            "validateUniqueness": false,
+            "possibleValues": null,
+            "userEditable": false,
+            "visibleOnUserProfile": true
+        },
+        {
+            "id": 110,
+            "name": "Employee Number",
+            "namedIdentifier": "employee_number",
+            "validatePresence": true,
+            "validateUniqueness": true,
+            "possibleValues": null,
+            "userEditable": false,
+            "visibleOnUserProfile": true
+        }
+    ]
+}
+```
+
 ## Create a User
 
 > Create a new user in your account:
@@ -515,7 +622,7 @@ skipInvitation | true | Skip sending the user an invitation email immediately. I
 hireDate | 2021-02-28 | Employment start date for user in ISO 8601 date format
 location | London | Primary location of user
 department | Marketing | Department of user
-customFields | [{ name: "Employee ID", value: "12-34-56" }] | CustomFields param is an array, of name/value pairs for custom fields.
+customFields | [{ name: "Employee ID", value: "12-34-56" }] | CustomFields param is an array, of name/value pairs for custom fields. Names must match the fields defined on your account — see [Get Custom Fields](#get-custom-fields). An unrecognised name is skipped and reported in a `warnings` array; see [Clearing custom field values](#clearing-custom-field-values).
 
 > 201 Created - successful response:
 
@@ -744,8 +851,28 @@ Within the `customFields` array each entry is a `{ "name": ..., "value": ... }` 
 * To **clear** a custom field, send it with `"value": null` or `"value": ""` — the stored value is removed.
 * **Omitting** a field from the `customFields` array leaves that field **unchanged** — omission does **not** clear it.
 * A custom field with **presence validation enabled cannot be cleared**: attempting to clear it returns `400 Bad Request` with a validation error and the existing value is retained.
-* An unknown custom field `name` returns `404 Not Found`.
+* An **unknown** custom field `name` is skipped. Every other field in the payload is still saved, the rest of the update still succeeds, and the unrecognised name is reported in a `warnings` array on the response. Use [Get Custom Fields](#get-custom-fields) to check the names defined on your account.
 * If your company has custom fields disabled, the entire `customFields` payload is silently ignored and the rest of the update still succeeds.
+
+Warnings are returned by [Create a User](#create-a-user), [Update a user](#update-a-user) and [Update a User by Integration External ID](#update-a-user-by-integration-external-id). The `warnings` key is only present when there is something to report:
+
+> 200 OK - a custom field name that does not exist on your account:
+
+```json
+{
+    "id": 1382,
+    "firstName": "Jim",
+    "customFields": [
+        {
+            "name": "Employee Number",
+            "value": "12-34-56"
+        }
+    ],
+    "warnings": [
+        "customFields: no custom field named 'Cost Centre' exists for this company, so its value was not written"
+    ]
+}
+```
 
 > 200 OK - successful response:
 
