@@ -538,6 +538,9 @@
                     <a href="#show-a-user-by-integration-external-id" class="toc-h2 toc-link" data-title="Show a User by Integration External ID">Show a User by Integration External ID</a>
                   </li>
                   <li>
+                    <a href="#get-custom-fields" class="toc-h2 toc-link" data-title="Get Custom Fields">Get Custom Fields</a>
+                  </li>
+                  <li>
                     <a href="#create-a-user" class="toc-h2 toc-link" data-title="Create a User">Create a User</a>
                   </li>
                   <li>
@@ -5779,6 +5782,145 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Not found"</span><span class="w">
 </span><span class="p">}</span><span class="w">
+</span></code></pre></div><h2 id='get-custom-fields'>Get Custom Fields</h2>
+<blockquote>
+<p>List the custom fields defined on your account:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">--location</span> <span class="nt">--request</span> GET <span class="s1">'https://{API_BASE_URL}/v1/users/custom_fields'</span> <span class="se">\</span>
+<span class="nt">--header</span> <span class="s1">'Authorization: Bearer YOUR-ACCESS-TOKEN'</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="k">module</span> <span class="nn">Learnamp</span>
+  <span class="k">class</span> <span class="nc">Users</span>
+    <span class="kp">include</span> <span class="no">HTTParty</span>
+    <span class="n">base_uri</span> <span class="s2">"</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'API_BASE_URL'</span><span class="p">]</span><span class="si">}</span><span class="s2">/v1"</span>
+
+    <span class="nb">attr_accessor</span> <span class="ss">:token</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+      <span class="vi">@token</span> <span class="o">=</span> <span class="n">token</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">custom_fields</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s2">"/users/custom_fields"</span><span class="p">,</span> <span class="p">{</span> <span class="ss">headers: </span><span class="n">headers</span> <span class="p">})</span>
+      <span class="n">response</span><span class="p">.</span><span class="nf">parsed_response</span> <span class="k">if</span> <span class="n">response</span><span class="p">.</span><span class="nf">ok?</span>
+    <span class="k">end</span>
+
+    <span class="kp">private</span>
+
+    <span class="k">def</span> <span class="nf">headers</span>
+      <span class="p">{</span>
+        <span class="s1">'Authorization'</span> <span class="o">=&gt;</span> <span class="s2">"Bearer </span><span class="si">#{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span>
+      <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">custom_fields</span> <span class="o">=</span> <span class="no">Learnamp</span><span class="o">::</span><span class="no">Users</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">token</span><span class="p">).</span><span class="nf">custom_fields</span>
+</code></pre></div>
+<p>List the custom fields defined on your account, so that you can map your own fields onto them before sending values with <a href="#create-a-user">Create a User</a> or <a href="#update-a-user">Update a user</a>.</p>
+
+<p><code>GET https://{API_BASE_URL}/v1/users/custom_fields</code></p>
+
+<p>Custom fields are defined on your account by Learn Amp — they cannot be created, renamed or deleted through the API. This endpoint is read-only, and returns definitions rather than any user&#39;s values. A user&#39;s own values are returned on the user object as <code>customFields</code>.</p>
+
+<p>Each field&#39;s <code>name</code> is the value to send in the <code>customFields</code> array when creating or updating a user.</p>
+<h3 id='required-scope-4'>Required Scope</h3>
+<p>This endpoint requires the <code>users:read</code> scope.</p>
+<h3 id='response-fields'>Response fields</h3>
+<table><thead>
+<tr>
+<th>Field</th>
+<th>type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>customFieldsEnabled</td>
+<td>boolean</td>
+<td>Whether custom field values can be written on your account. When <code>false</code>, a <code>customFields</code> payload sent to the user endpoints is ignored. Definitions are still listed, so this is distinguishable from having none defined.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Identifier of the custom field.</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>The field&#39;s name, as shown in Learn Amp. Send this value in the <code>customFields</code> array when creating or updating a user.</td>
+</tr>
+<tr>
+<td>namedIdentifier</td>
+<td>string or null</td>
+<td>An optional stable reference code for the field. Not set on most fields.</td>
+</tr>
+<tr>
+<td>validatePresence</td>
+<td>boolean</td>
+<td>When <code>true</code>, the field&#39;s value cannot be cleared. See <a href="#clearing-custom-field-values">Clearing custom field values</a>.</td>
+</tr>
+<tr>
+<td>validateUniqueness</td>
+<td>boolean</td>
+<td>When <code>true</code>, a value may only be used by one user in your account. Sending a duplicate value returns <code>400 Bad Request</code>.</td>
+</tr>
+<tr>
+<td>possibleValues</td>
+<td>Array(string) or null</td>
+<td>When <code>null</code>, the field accepts free text. When an array, only those values are accepted and anything else returns <code>400 Bad Request</code>.</td>
+</tr>
+<tr>
+<td>userEditable</td>
+<td>boolean</td>
+<td>Whether users can edit their own value for this field.</td>
+</tr>
+<tr>
+<td>visibleOnUserProfile</td>
+<td>boolean</td>
+<td>Whether the field is shown on a user&#39;s profile.</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>200 OK - successful response:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"customFieldsEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"customFields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">109</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Contract term"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"namedIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validatePresence"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validateUniqueness"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"possibleValues"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"Permanent"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"Fixed term"</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="nl">"userEditable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"visibleOnUserProfile"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">107</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cost Centre"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"namedIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validatePresence"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validateUniqueness"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"possibleValues"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"userEditable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"visibleOnUserProfile"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Employee Number"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"namedIdentifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"employee_number"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validatePresence"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"validateUniqueness"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"possibleValues"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"userEditable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"visibleOnUserProfile"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></code></pre></div><h2 id='create-a-user'>Create a User</h2>
 <blockquote>
 <p>Create a new user in your account:</p>
@@ -5845,7 +5987,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Create a user and trigger an invite email.</p>
 
 <p><code>POST https://{API_BASE_URL}/v1/users</code></p>
-<h3 id='required-scope-4'>Required Scope</h3>
+<h3 id='required-scope-5'>Required Scope</h3>
 <p>This endpoint requires the <code>users:create</code> scope.</p>
 <h3 id='data-in-body'>Data in Body</h3>
 <table><thead>
@@ -5943,7 +6085,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <tr>
 <td>customFields</td>
 <td>[{ name: &quot;Employee ID&quot;, value: &quot;12-34-56&quot; }]</td>
-<td>CustomFields param is an array, of name/value pairs for custom fields.</td>
+<td>CustomFields param is an array, of name/value pairs for custom fields. Names must match the fields defined on your account — see <a href="#get-custom-fields">Get Custom Fields</a>. An unrecognised name is skipped and reported in a <code>warnings</code> array; see <a href="#clearing-custom-field-values">Clearing custom field values</a>.</td>
 </tr>
 </tbody></table>
 
@@ -6127,7 +6269,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Update a user&#39;s details&#39;.</p>
 
 <p><code>PUT https://{API_BASE_URL}/v1/users/{userId}</code></p>
-<h3 id='required-scope-5'>Required Scope</h3>
+<h3 id='required-scope-6'>Required Scope</h3>
 <p>This endpoint requires the <code>users:update</code> scope.</p>
 <h3 id='data-in-body-2'>Data in Body</h3>
 <table><thead>
@@ -6260,10 +6402,29 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <li>To <strong>clear</strong> a custom field, send it with <code>&quot;value&quot;: null</code> or <code>&quot;value&quot;: &quot;&quot;</code> — the stored value is removed.</li>
 <li><strong>Omitting</strong> a field from the <code>customFields</code> array leaves that field <strong>unchanged</strong> — omission does <strong>not</strong> clear it.</li>
 <li>A custom field with <strong>presence validation enabled cannot be cleared</strong>: attempting to clear it returns <code>400 Bad Request</code> with a validation error and the existing value is retained.</li>
-<li>An unknown custom field <code>name</code> returns <code>404 Not Found</code>.</li>
+<li>An <strong>unknown</strong> custom field <code>name</code> is skipped. Every other field in the payload is still saved, the rest of the update still succeeds, and the unrecognised name is reported in a <code>warnings</code> array on the response. Use <a href="#get-custom-fields">Get Custom Fields</a> to check the names defined on your account.</li>
 <li>If your company has custom fields disabled, the entire <code>customFields</code> payload is silently ignored and the rest of the update still succeeds.</li>
 </ul>
 
+<p>Warnings are returned by <a href="#create-a-user">Create a User</a>, <a href="#update-a-user">Update a user</a> and <a href="#update-a-user-by-integration-external-id">Update a User by Integration External ID</a>. The <code>warnings</code> key is only present when there is something to report:</p>
+
+<blockquote>
+<p>200 OK - a custom field name that does not exist on your account:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1382</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Jim"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"customFields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Employee Number"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12-34-56"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"warnings"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"customFields: no custom field named 'Cost Centre' exists for this company, so its value was not written"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
 <blockquote>
 <p>200 OK - successful response:</p>
 </blockquote>
@@ -6442,7 +6603,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Update a user without knowing their Learn Amp <code>id</code>. The user is matched by <code>integrationExternalId</code> within your company.</p>
 
 <p><code>PUT https://{API_BASE_URL}/v1/users/by_integration_external_id/{integrationExternalId}</code></p>
-<h3 id='required-scope-6'>Required Scope</h3>
+<h3 id='required-scope-7'>Required Scope</h3>
 <p>This endpoint requires the <code>users:update</code> scope.</p>
 <h3 id='data-in-body-3'>Data in Body</h3>
 <p>Accepts the same body parameters as <a href="#update-a-user">Update a User</a>, including <code>integrationExternalId</code> itself — sending a new value renames the user&#39;s external identifier, sending <code>null</code> or <code>&quot;&quot;</code> clears it.</p>
@@ -6533,7 +6694,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Deactivate a user, so that they can no longer login. Their data is not removed.</p>
 
 <p><code>PUT https://{API_BASE_URL}/v1/users/{userId}/deactivate</code></p>
-<h3 id='required-scope-7'>Required Scope</h3>
+<h3 id='required-scope-8'>Required Scope</h3>
 <p>This endpoint requires the <code>users:deactivate</code> scope.</p>
 
 <blockquote>
@@ -6584,7 +6745,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Reactivate a user, so that they login again.</p>
 
 <p><code>PUT https://{API_BASE_URL}/v1/users/{userId}/reactivate</code></p>
-<h3 id='required-scope-8'>Required Scope</h3>
+<h3 id='required-scope-9'>Required Scope</h3>
 <p>This endpoint requires the <code>users:reactivate</code> scope.</p>
 
 <blockquote>
@@ -6635,7 +6796,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>Delete a user, so that they can no longer login. Their data is removed.</p>
 
 <p><code>DELETE https://{API_BASE_URL}/v1/users/{userId}</code></p>
-<h3 id='required-scope-9'>Required Scope</h3>
+<h3 id='required-scope-10'>Required Scope</h3>
 <p>This endpoint requires the <code>users:delete</code> scope.</p>
 
 <blockquote>
@@ -6686,7 +6847,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <p>View progress of all assigned channels by a specified user. This is analogous to Learn Amp&#39;s People Log feature, for a single user.</p>
 
 <p><code>GET https://{API_BASE_URL}/v1/users/{userId}/channels_progress</code></p>
-<h3 id='required-scope-10'>Required Scope</h3>
+<h3 id='required-scope-11'>Required Scope</h3>
 <p>This endpoint requires the <code>user_channels_progress:read</code> scope.</p>
 
 <p>This end-point will return a paginated array of channels that are assigned to the specified user. Each element will contain the completion percentage of the channel by that user, as well as the datetime (if any) when the channel was completed.</p>
