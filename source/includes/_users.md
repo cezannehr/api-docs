@@ -622,7 +622,7 @@ skipInvitation | true | Skip sending the user an invitation email immediately. I
 hireDate | 2021-02-28 | Employment start date for user in ISO 8601 date format
 location | London | Primary location of user
 department | Marketing | Department of user
-customFields | [{ name: "Employee ID", value: "12-34-56" }] | CustomFields param is an array, of name/value pairs for custom fields. Names must match the fields defined on your account — see [Get Custom Fields](#get-custom-fields). An unrecognised name is skipped and reported in a `warnings` array; see [Clearing custom field values](#clearing-custom-field-values).
+customFields | [{ name: "Employee ID", value: "12-34-56" }] | CustomFields param is an array, of name/value pairs for custom fields. Names must match the fields defined on your account — see [Get Custom Fields](#get-custom-fields). See also [Clearing custom field values](#clearing-custom-field-values).
 
 > 201 Created - successful response:
 
@@ -851,28 +851,8 @@ Within the `customFields` array each entry is a `{ "name": ..., "value": ... }` 
 * To **clear** a custom field, send it with `"value": null` or `"value": ""` — the stored value is removed.
 * **Omitting** a field from the `customFields` array leaves that field **unchanged** — omission does **not** clear it.
 * A custom field with **presence validation enabled cannot be cleared**: attempting to clear it returns `400 Bad Request` with a validation error and the existing value is retained.
-* An **unknown** custom field `name` is skipped. Every other field in the payload is still saved, the rest of the update still succeeds, and the unrecognised name is reported in a `warnings` array on the response. Use [Get Custom Fields](#get-custom-fields) to check the names defined on your account.
+* An unknown custom field `name` returns `404 Not Found`. Use [Get Custom Fields](#get-custom-fields) to check the names defined on your account.
 * If your company has custom fields disabled, the entire `customFields` payload is silently ignored and the rest of the update still succeeds.
-
-Warnings are returned by [Create a User](#create-a-user), [Update a user](#update-a-user) and [Update a User by Integration External ID](#update-a-user-by-integration-external-id). The `warnings` key is only present when there is something to report:
-
-> 200 OK - a custom field name that does not exist on your account:
-
-```json
-{
-    "id": 1382,
-    "firstName": "Jim",
-    "customFields": [
-        {
-            "name": "Employee Number",
-            "value": "12-34-56"
-        }
-    ],
-    "warnings": [
-        "customFields: no custom field named 'Cost Centre' exists for this company, so its value was not written"
-    ]
-}
-```
 
 > 200 OK - successful response:
 
