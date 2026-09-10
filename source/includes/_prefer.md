@@ -54,9 +54,11 @@ Request Header | Example value | Description
 --------- | ------- | -----------
 Prefer | return=minimal | Apply the update, then respond without rendering the record
 
-`return=minimal` is the only preference we read. Send it as a single token, exactly as written — matching is case-insensitive, so `Return=Minimal` is fine, but `return = minimal` with spaces around the `=` is not recognised and you will get the full body back.
+`return=minimal` is the only preference we read, and we parse it as RFC 7240 defines it: names and values are case-insensitive, so `Return=Minimal` works; whitespace around the `=` is accepted; the value may be quoted, as `return="minimal"`; and a preference may carry `;parameters`, which we ignore.
 
-`Prefer` may carry several comma-separated preferences. Any others are ignored rather than rejected, so an extra preference will not fail the request — it just has no effect here. That includes `return=representation`, RFC 7240's counterpart to `return=minimal`: we do not read it, though it describes what you get by default anyway.
+`Prefer` may carry several comma-separated preferences. Any others are ignored rather than rejected, so an extra preference will not fail the request — it just has no effect here. That includes `return=representation`, RFC 7240's counterpart to `return=minimal`: we do not act on it, though it describes what you get by default anyway.
+
+Where the same preference appears twice, the first one counts, per RFC 7240. So `Prefer: return=representation, return=minimal` returns the full body.
 
 Omit the header and the response is unchanged, so adding it is safe to roll out one integration at a time.
 
