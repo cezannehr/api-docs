@@ -67,7 +67,7 @@ filters[email] | email@test.com | Return users with matching email address
 filters[integration_external_id] | EPOS-12345 | Return the user with exactly matching integration external ID
 filters[first_name] | John | Return users with matching first name (using `ILIKE '%value%'`)
 filters[last_name] | Smith | Return users with matching last name (using `ILIKE '%value%'`)
-filters[role] | viewer | Return users with matching role. <br />Possible values: "viewer", "curator", "reporter", "hr", "admin", "owner"
+filters[role] | viewer | Return users with matching role. <br />Possible values: "viewer", "curator", "reporter", "learning_designer", "hr", "admin", "owner"
 filters[no_team] | true | Return users that have no team assigned
 filters[team_ids] | *[1,2,3]* or *1,2,3* | Return members of any of the given teams by team ID.<br /><br />Param can be array of team ids, or a string of comma seperated team ids
 filters[status][] | *[confirmed,invite_pending]* or *confirmed* | Return users matching any of the given statuses. Repeat the param to pass multiple, e.g. `filters[status][]=confirmed&filters[status][]=deactivated`.<br />Param can be an array of statuses, or a string of comma separated statuses.<br />Possible values: "not_invited", "invite_scheduled", "invite_pending", "confirmed", "deactivated"
@@ -830,7 +830,7 @@ lastName | string | User | Last name of user *(\*)*
 integrationExternalId | string | "EPOS-12345" | Optional third-party identifier for the user. Must be unique within your company. Send `null` or `""` to clear an existing value.
 language | enum | fr | Primary language short code (e.g. `fr`). Must be one of the [supported language codes](#supported-language-codes).
 jobTitle | string |Developer | Job title of user
-role | enum | admin | User's system role. One of: viewer, curator, reporter, learning_designer, hr, admin. `owner` and `super_admin` cannot be set via the API. `hr` requires the HR-role package on your company (otherwise returns `422 Unprocessable Entity`).
+role | enum | admin | User's system role. One of: viewer, curator, reporter, learning_designer, hr, admin. `owner` and `super_admin` cannot be set via the API. `hr` requires the HR-role package on your company (otherwise returns `400 Bad Request`).
 primaryTeamId | integer | 15 | Team ID of primary team [see Teams](#teams)
 primaryTeamIntegrationExternalId | string | "EPOS-001" | Primary team's `integrationExternalId` [see Teams](#teams). Mutually exclusive with `primaryTeamId`.
 secondaryTeamIds | Array(integer) | [376,377] | Array of Team IDs of seconary teams
