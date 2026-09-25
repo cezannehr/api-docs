@@ -242,3 +242,100 @@ Response will be paginated [see pagination](#pagination)
     "error": "Not found"
 }
 ```
+
+## Learnlist Users Progress
+
+> View progress of all assigned users through a specified learnlist:
+
+```shell
+curl --location --request GET 'https://{API_BASE_URL}/v1/learnlists/123/users_progress' \
+--header 'Authorization: Bearer YOUR-ACCESS-TOKEN'
+```
+
+```ruby
+module Learnamp
+  class Learnlists
+    include HTTParty
+    base_uri "#{ENV['API_BASE_URL']}/v1"
+
+    attr_accessor :token
+
+    def initialize(token)
+      @token = token
+    end
+
+    def users_progress(id, page: 1)
+      response = self.class.get("/learnlists/#{id}/users_progress?page=#{page}", { headers: headers })
+      response.parsed_response
+    end
+
+    private
+
+    def headers
+      {
+        'Authorization' => "Bearer #{token}"
+      }
+    end
+  end
+end
+
+data = Learnamp::Learnlists.new(token).users_progress(123)
+```
+
+View progress of all assigned users through a specified learnlist. This is analogous to Learn Amp's Content Log feature, for a single learnlist, and returns the same fields as [Channel Users Progress](#users-progress).
+
+`GET https://{API_BASE_URL}/v1/learnlists/{learnlistId}/users_progress`
+
+### Required Scope
+This endpoint requires the `learnlist_users_progress:read` scope.
+
+This end-point will return a paginated array of users who are assigned the specified learnlist. Each element will contain the completion percentage of the learnlist by that user, as well as the datetime (if any) when the learnlist was completed.
+
+Please note: Only assigned users will be returned. Users who are not assigned the specified learnlist will not appear in the array.
+
+When a learnlist is set again as a task with "Require learner to complete again", the learnlist's previous completions no longer count, so this endpoint reports those users as incomplete until they complete it again. Use it rather than Channel Users Progress when you need the current completion of a learnlist that is re-tasked on a cycle.
+
+Also, please note: The completion percentage is a cached value, which is refreshed in the background automatically. The completion percentage shown may therefore take a few minutes to update.
+
+The results are ordered alphabetically by user's last name.
+
+Response will be paginated [see pagination](#pagination)
+
+> 200 OK - successful response:
+
+```json
+[
+    {
+        "userId": 200321,
+        "firstName": "John",
+        "lastName": "Abc",
+        "email": "jabc@test.com",
+        "contentName": "Data Protection",
+        "contentType": "Learnlist",
+        "contentId": 123,
+        "completed": false,
+        "completionPercent": 50,
+        "completedAt": null
+    },
+    {
+        "userId": 200018,
+        "firstName": "Hannah",
+        "lastName": "Baker",
+        "email": "hbaker@test.com",
+        "contentName": "Data Protection",
+        "contentType": "Learnlist",
+        "contentId": 123,
+        "completed": true,
+        "completionPercent": 100,
+        "completedAt": "2026-03-07T15:44:04Z"
+    }
+]
+```
+
+> 404 Not Found - unsuccessful response when learnlist ID does not exist:
+
+```json
+{
+    "error": "Not found"
+}
+```
