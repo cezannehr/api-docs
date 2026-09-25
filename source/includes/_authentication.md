@@ -114,6 +114,7 @@ languages:read | Read access to languages
 learnlists:read | Read access to learnlists
 channels:read | Read access to channels
 channel_users_progress:read | Read access to channel users progress
+learnlist_users_progress:read | Read access to learnlist users progress
 user_channels_progress:read | Read access to user channels progress
 roles:read | Read access to roles
 
