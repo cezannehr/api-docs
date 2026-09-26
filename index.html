@@ -581,6 +581,20 @@
               </ul>
           </li>
           <li>
+            <a href="#minimal-responses" class="toc-h1 toc-link" data-title="Minimal Responses">Minimal Responses</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#request" class="toc-h2 toc-link" data-title="Request">Request</a>
+                  </li>
+                  <li>
+                    <a href="#response" class="toc-h2 toc-link" data-title="Response">Response</a>
+                  </li>
+                  <li>
+                    <a href="#supported-endpoints" class="toc-h2 toc-link" data-title="Supported endpoints">Supported endpoints</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#paginated-responses" class="toc-h1 toc-link" data-title="Paginated Responses">Paginated Responses</a>
               <ul class="toc-list-h2">
                   <li>
@@ -593,6 +607,11 @@
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#validation-errors" class="toc-h2 toc-link" data-title="Validation Errors">Validation Errors</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#time-zones" class="toc-h1 toc-link" data-title="Time Zones">Time Zones</a>
@@ -4322,7 +4341,7 @@ endpoint responsible for team member creation was implemented.</p>
 <tr>
 <td>itemType</td>
 <td>article</td>
-<td>Item type, one of: &quot;article&quot;, &quot;document&quot;, &quot;book&quot;, &quot;q_and_a&quot;, &quot;info_card&quot;, &quot;video&quot;, &quot;elearning&quot;, &quot;infographic&quot;, &quot;audio&quot;, &quot;slides&quot;, &quot;image&quot;, &quot;project&quot;, &quot;classroom&quot;, &quot;coaching&quot;, &quot;course&quot;, &quot;event&quot;, &quot;presentation&quot;, &quot;meeting&quot;, &quot;webinar&quot;, &quot;action&quot;, &quot;test&quot;, &quot;qa&quot;, &quot;announcement&quot;, &quot;newsletter&quot;, &quot;reminder&quot;, &quot;website&quot;, &quot;other&quot;</td>
+<td>Item type, one of: &quot;article&quot;, &quot;document&quot;, &quot;book&quot;, &quot;q_and_a&quot;, &quot;info_card&quot;, &quot;author_content&quot;, &quot;video&quot;, &quot;elearning&quot;, &quot;infographic&quot;, &quot;audio&quot;, &quot;slides&quot;, &quot;image&quot;, &quot;project&quot;, &quot;classroom&quot;, &quot;coaching&quot;, &quot;course&quot;, &quot;event&quot;, &quot;presentation&quot;, &quot;meeting&quot;, &quot;webinar&quot;, &quot;action&quot;, &quot;test&quot;, &quot;qa&quot;, &quot;announcement&quot;, &quot;newsletter&quot;, &quot;reminder&quot;, &quot;website&quot;, &quot;other&quot;</td>
 </tr>
 <tr>
 <td>totalTime</td>
@@ -4536,7 +4555,7 @@ endpoint responsible for team member creation was implemented.</p>
 <tr>
 <td>itemType</td>
 <td>article</td>
-<td>Item type, one of: &quot;article&quot;, &quot;document&quot;, &quot;book&quot;, &quot;q_and_a&quot;, &quot;info_card&quot;, &quot;video&quot;, &quot;elearning&quot;, &quot;infographic&quot;, &quot;audio&quot;, &quot;slides&quot;, &quot;image&quot;, &quot;project&quot;, &quot;classroom&quot;, &quot;coaching&quot;, &quot;course&quot;, &quot;event&quot;, &quot;presentation&quot;, &quot;meeting&quot;, &quot;webinar&quot;, &quot;action&quot;, &quot;test&quot;, &quot;qa&quot;, &quot;announcement&quot;, &quot;newsletter&quot;, &quot;reminder&quot;, &quot;website&quot;, &quot;other&quot;</td>
+<td>Item type, one of: &quot;article&quot;, &quot;document&quot;, &quot;book&quot;, &quot;q_and_a&quot;, &quot;info_card&quot;, &quot;author_content&quot;, &quot;video&quot;, &quot;elearning&quot;, &quot;infographic&quot;, &quot;audio&quot;, &quot;slides&quot;, &quot;image&quot;, &quot;project&quot;, &quot;classroom&quot;, &quot;coaching&quot;, &quot;course&quot;, &quot;event&quot;, &quot;presentation&quot;, &quot;meeting&quot;, &quot;webinar&quot;, &quot;action&quot;, &quot;test&quot;, &quot;qa&quot;, &quot;announcement&quot;, &quot;newsletter&quot;, &quot;reminder&quot;, &quot;website&quot;, &quot;other&quot;</td>
 </tr>
 <tr>
 <td>totalTime</td>
@@ -5508,7 +5527,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <tr>
 <td>filters[role]</td>
 <td>viewer</td>
-<td>Return users with matching role. <br />Possible values: &quot;viewer&quot;, &quot;curator&quot;, &quot;reporter&quot;, &quot;hr&quot;, &quot;admin&quot;, &quot;owner&quot;</td>
+<td>Return users with matching role. <br />Possible values: &quot;viewer&quot;, &quot;curator&quot;, &quot;reporter&quot;, &quot;learning_designer&quot;, &quot;hr&quot;, &quot;admin&quot;, &quot;owner&quot;</td>
 </tr>
 <tr>
 <td>filters[no_team]</td>
@@ -6415,7 +6434,7 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <td>role</td>
 <td>enum</td>
 <td>admin</td>
-<td>User&#39;s system role. One of: viewer, curator, reporter, learning_designer, hr, admin. <code>owner</code> and <code>super_admin</code> cannot be set via the API. <code>hr</code> requires the HR-role package on your company (otherwise returns <code>422 Unprocessable Entity</code>).</td>
+<td>User&#39;s system role. One of: viewer, curator, reporter, learning_designer, hr, admin. <code>owner</code> and <code>super_admin</code> cannot be set via the API. <code>hr</code> requires the HR-role package on your company (otherwise returns <code>400 Bad Request</code>).</td>
 </tr>
 <tr>
 <td>primaryTeamId</td>
@@ -7246,7 +7265,118 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
         </span><span class="p">}</span><span class="w">
     </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h1 id='paginated-responses'>Paginated Responses</h1>
+</span></code></pre></div><h1 id='minimal-responses'>Minimal Responses</h1>
+<p>By default, the update endpoints return the full updated record in the response body. If your integration does not read that body — for example, because it verifies the write with a separate <code>GET</code>, or simply checks the status code — you can ask us not to build it.</p>
+
+<p>Send the <a href="https://www.rfc-editor.org/rfc/rfc7240">RFC 7240</a> <code>Prefer</code> header:</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="nt">--location</span> <span class="nt">--request</span> PUT <span class="s1">'https://{API_BASE_URL}/v1/users/1904'</span> <span class="se">\</span>
+<span class="nt">--header</span> <span class="s1">'Authorization: Bearer YOUR-ACCESS-TOKEN'</span> <span class="se">\</span>
+<span class="nt">--header</span> <span class="s1">'Prefer: return=minimal'</span> <span class="se">\</span>
+<span class="nt">--form</span> <span class="s1">'jobTitle=Developer'</span>
+</code></pre></div><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="k">module</span> <span class="nn">Learnamp</span>
+  <span class="k">class</span> <span class="nc">Users</span>
+    <span class="kp">include</span> <span class="no">HTTParty</span>
+    <span class="n">base_uri</span> <span class="s2">"</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'API_BASE_URL'</span><span class="p">]</span><span class="si">}</span><span class="s2">/v1"</span>
+
+    <span class="nb">attr_accessor</span> <span class="ss">:token</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+      <span class="vi">@token</span> <span class="o">=</span> <span class="n">token</span>
+    <span class="k">end</span>
+
+    <span class="c1"># Returns 204 with no body -- check the status, not the response.</span>
+    <span class="k">def</span> <span class="nf">update_minimal</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">put</span><span class="p">(</span><span class="s2">"/users/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="p">{</span> <span class="ss">body: </span><span class="n">params</span><span class="p">,</span> <span class="ss">headers: </span><span class="n">headers</span> <span class="p">})</span>
+    <span class="k">end</span>
+
+    <span class="kp">private</span>
+
+    <span class="k">def</span> <span class="nf">headers</span>
+      <span class="p">{</span>
+        <span class="s1">'Authorization'</span> <span class="o">=&gt;</span> <span class="s2">"Bearer </span><span class="si">#{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s1">'Prefer'</span> <span class="o">=&gt;</span> <span class="s1">'return=minimal'</span>
+      <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<blockquote>
+<p>204 No Content - the update succeeded and no body was rendered:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="w">
+</span></code></pre></div>
+<p>The update is applied exactly as normal. Only the response changes.</p>
+<h2 id='request'>Request</h2>
+<table><thead>
+<tr>
+<th>Request Header</th>
+<th>Example value</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Prefer</td>
+<td>return=minimal</td>
+<td>Apply the update, then respond without rendering the record</td>
+</tr>
+</tbody></table>
+
+<p><code>return=minimal</code> is the only preference we read, and we parse it as RFC 7240 defines it: names and values are case-insensitive, so <code>Return=Minimal</code> works; whitespace around the <code>=</code> is accepted; the value may be quoted, as <code>return=&quot;minimal&quot;</code>; and a preference may carry <code>;parameters</code>, which we ignore.</p>
+
+<p><code>Prefer</code> may carry several comma-separated preferences. Any others are ignored rather than rejected, so an extra preference will not fail the request — it just has no effect here. That includes <code>return=representation</code>, RFC 7240&#39;s counterpart to <code>return=minimal</code>: we do not act on it, though it describes what you get by default anyway.</p>
+
+<p>Where the same preference appears twice, the first one counts, per RFC 7240. So <code>Prefer: return=representation, return=minimal</code> returns the full body.</p>
+
+<p>Omit the header and the response is unchanged, so adding it is safe to roll out one integration at a time.</p>
+<h2 id='response'>Response</h2>
+<p>With the header applied, you get <code>204 No Content</code>, an empty body, and confirmation that we honoured the preference:</p>
+
+<table><thead>
+<tr>
+<th>Response Header</th>
+<th>Example value</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Preference-Applied</td>
+<td>return=minimal</td>
+<td>We skipped rendering the record</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">Check for <code>Preference-Applied</code> rather than assuming the preference took effect. On any endpoint that does not support it, the header is ignored and you get the usual <code>200</code> and full body — so a client that treats every response as empty would silently discard data.</aside>
+<h2 id='supported-endpoints'>Supported endpoints</h2>
+<p><code>Prefer: return=minimal</code> is currently honoured on the <strong>update</strong> endpoints only:</p>
+
+<table><thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>PUT</td>
+<td><a href="#update-a-user"><code>/v1/users/{userId}</code></a></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="#update-a-user-by-integration-external-id"><code>/v1/users/by_integration_external_id/{integrationExternalId}</code></a></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="#update-a-team"><code>/v1/teams/{teamId}</code></a></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><a href="#update-an-item"><code>/v1/items/{itemId}</code></a></td>
+</tr>
+</tbody></table>
+
+<aside class="warning">Create (<code>POST</code>) endpoints do <strong>not</strong> support it yet, and will return <code>201</code> with the full body as usual. If you set <code>Prefer</code> globally in your HTTP client configuration, expect it to apply to updates and be ignored on creates.</aside>
+
+<p>Endpoints that already return <code>204 No Content</code> — deactivate, reactivate, and the <code>DELETE</code> endpoints — need nothing, as they render no body in the first place.</p>
+<h1 id='paginated-responses'>Paginated Responses</h1>
 <p>All &quot;View All&quot; type responses will be paginated.</p>
 <h2 id='pagination-data-in-reponse'>Pagination data in Reponse</h2>
 <p>Pagination data will be available in the following response headers:</p>
@@ -7356,6 +7486,47 @@ curl <span class="nt">--location</span> <span class="nt">--request</span> POST <
 <td>We&#39;re temporarily offline for maintenance. Please try again later.</td>
 </tr>
 </tbody></table>
+<h2 id='validation-errors'>Validation Errors</h2>
+<blockquote>
+<p>400 Bad request - two parameters rejected on <code>POST /v1/users</code>:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"firstName is missing, role must be one of: viewer, curator, reporter, learning_designer, hr, admin"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"fullErrors"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"is missing"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"role"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"must be one of: viewer, curator, reporter, learning_designer, hr, admin"</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>A <code>400</code> caused by a rejected parameter returns both a summary and a per-parameter breakdown:</p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>error</code></td>
+<td>Every problem in one string, joined with commas. Useful for logging.</td>
+</tr>
+<tr>
+<td><code>fullErrors</code></td>
+<td>An object keyed by parameter name, each holding an array of that parameter&#39;s problems. Use this to attribute a failure to a field.</td>
+</tr>
+</tbody></table>
+
+<p>A parameter can carry more than one problem, and more than one parameter can be rejected in a single response, so treat both the values in <code>fullErrors</code> and its keys as lists.</p>
+
+<aside class="notice">Nothing is written when a request fails validation — the whole payload is rejected, not the valid parts of it. Correct the request and send it again.</aside>
+
+<p>Where a parameter accepts a fixed set of values, the message names that set, so you can diagnose a rejected value from the response without consulting this page. The accepted values differ by endpoint — filtering users by role accepts <code>owner</code>, for instance, while setting a user&#39;s role does not — so trust the message over a list you have cached.</p>
+
+<aside class="warning">Match on the status code and the <code>fullErrors</code> keys, not on message text. The wording is there for a human reading a log, and it changes as validation changes.</aside>
 <h1 id='time-zones'>Time Zones</h1>
 <p>The <a href="#activities">Activities API</a> supports an optional TimeZone parameter.</p>
 
